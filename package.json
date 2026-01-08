@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "type": "module",
   "description": "MathWorks Content Discovery Assistant - AI-powered documentation discovery",
+  "homepage": "https://dmarshal-prototypes.github.io/mw-dashboard/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext js,jsx",
-    "format": "prettier --write \"src/**/*.{js,jsx,css}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\"",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -22,6 +25,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
-    "prettier": "^3.4.2"
+    "prettier": "^3.4.2",
+    "gh-pages": "^6.1.1"
   }
 }

@@ -22,19 +22,24 @@ The Content Discovery Assistant helps MATLAB and Simulink users cut through the 
 
 ## Technology Stack
 
-- **React**: UI framework with hooks (useState)
+- **React 18**: Modern UI framework with hooks
+- **Vite**: Fast build tool and dev server
 - **Lucide React**: Icon library
 - **Claude AI (Anthropic)**: Sonnet 4 model for intelligent content analysis
-- **Inline Styles**: Component-scoped styling
+- **Theme System**: Centralized design tokens
 
-## Current Architecture
+## Architecture
 
-The application currently exists as a single-file React component (`mw-dashboard.jsx`) containing:
+The application has been refactored into a modern, scalable multi-file structure:
 
-- Component logic and state management
-- Claude API integration
-- Complete UI rendering with inline styles
-- All styling (including custom fonts and animations)
+- **29+ files** organized into logical modules
+- **Separation of concerns**: UI, logic, API, and styles are isolated
+- **Reusable components**: Badge, LoadingSpinner, RelevanceBar, and more
+- **Custom hooks**: `useContentAnalysis` for state management
+- **Theme system**: Centralized design tokens for consistent styling
+- **Path aliases**: Clean imports with `@components`, `@services`, etc.
+
+See `REFACTORING_PROPOSAL.md` for detailed architecture documentation.
 
 ## Getting Started
 
@@ -61,12 +66,9 @@ echo "VITE_ANTHROPIC_API_KEY=your-api-key-here" > .env.local
 npm run dev
 ```
 
-### Current Usage
+The application will start on `http://localhost:3000`.
 
-The single JSX file can be integrated into a React application by:
-
-1. Importing the component: `import ContentDiscoveryAssistant from './mw-dashboard.jsx'`
-2. Rendering it in your app: `<ContentDiscoveryAssistant />`
+See `QUICK_START.md` for detailed setup instructions.
 
 ## How It Works
 
@@ -118,9 +120,67 @@ The prompt is carefully crafted to extract:
 }
 ```
 
+## Deployment
+
+### GitHub Pages
+
+This app is configured for easy deployment to GitHub Pages:
+
+**Automated Deployment (Recommended):**
+1. Set `ANTHROPIC_API_KEY` secret in your GitHub repository
+2. Push to main branch
+3. GitHub Actions automatically builds and deploys
+
+**Manual Deployment:**
+```bash
+npm run deploy
+```
+
+**Live URL:** `https://dmarshal-prototypes.github.io/mw-dashboard/`
+
+⚠️ **Security Note:** When deployed to GitHub Pages, the API key is embedded in the JavaScript bundle. This is acceptable for personal/demo use, but for production, implement a backend proxy.
+
+See `DEPLOYMENT.md` for complete deployment instructions and security considerations.
+
+## Project Structure
+
+```
+mw-dashboard/
+├── public/              # Static assets
+├── src/
+│   ├── components/      # React components
+│   │   ├── input/      # UrlInput component
+│   │   ├── layout/     # Header, EmptyState
+│   │   ├── results/    # Result display components
+│   │   └── ui/         # Reusable UI components
+│   ├── hooks/          # Custom React hooks
+│   ├── services/       # API and business logic
+│   ├── styles/         # Theme and global styles
+│   ├── utils/          # Utility functions
+│   ├── App.jsx         # Main app component
+│   └── main.jsx        # Entry point
+├── .github/workflows/  # GitHub Actions
+├── package.json        # Dependencies
+├── vite.config.js      # Build configuration
+└── *.md               # Documentation
+```
+
+## Documentation
+
+- `README.md` - This file, project overview
+- `QUICK_START.md` - Setup and development guide
+- `DEPLOYMENT.md` - GitHub Pages deployment guide
+- `REFACTORING_PROPOSAL.md` - Detailed architecture documentation
+
 ## Future Enhancements
 
-See the refactoring proposal below for planned improvements to architecture, scalability, and maintainability.
+- Add backend proxy for secure API key management
+- Implement user authentication
+- Add tests (Jest + React Testing Library)
+- Convert to TypeScript
+- Add URL history with localStorage
+- Export results feature
+- Mobile responsiveness improvements
 
 ## License
 

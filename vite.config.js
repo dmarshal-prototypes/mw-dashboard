@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
+  base: '/mw-dashboard/', // GitHub Pages base path
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -20,5 +21,17 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
   },
 });
