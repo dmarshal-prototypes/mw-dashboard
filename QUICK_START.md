@@ -1,5 +1,7 @@
 # Quick Start Guide
 
+**⚠️ Proof of Concept:** This application uses mock data to demonstrate functionality. No API key is required.
+
 ## Setup Instructions
 
 ### 1. Install Dependencies
@@ -12,30 +14,10 @@ This will install:
 - React 18.3.1
 - React DOM 18.3.1
 - Lucide React (icons)
-- Axios (HTTP client)
 - Vite (build tool)
 - ESLint & Prettier (code quality)
 
-### 2. Configure Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```bash
-cp .env.example .env.local
-```
-
-Then edit `.env.local` and add your Anthropic API key:
-
-```env
-VITE_ANTHROPIC_API_KEY=your_actual_api_key_here
-VITE_API_BASE_URL=https://api.anthropic.com/v1
-VITE_MODEL_NAME=claude-sonnet-4-20250514
-VITE_MAX_TOKENS=4000
-```
-
-**Important:** Never commit `.env.local` to version control (it's already in `.gitignore`).
-
-### 3. Run the Development Server
+### 2. Run the Development Server
 
 ```bash
 npm run dev
@@ -43,7 +25,7 @@ npm run dev
 
 The application will start on `http://localhost:3000` and automatically open in your browser.
 
-### 4. Build for Production
+### 3. Build for Production
 
 ```bash
 npm run build
@@ -51,11 +33,19 @@ npm run build
 
 This creates an optimized production build in the `dist/` directory.
 
-### 5. Preview Production Build
+### 4. Preview Production Build
 
 ```bash
 npm run preview
 ```
+
+### 5. Deploy to GitHub Pages
+
+```bash
+npm run deploy
+```
+
+This builds and deploys your app to the `gh-pages` branch.
 
 ## Project Structure
 
@@ -184,10 +174,6 @@ export const MyComponent = () => {
 ```
 
 ## Troubleshooting
-
-### "API key not configured" error
-- Make sure `.env.local` exists with `VITE_ANTHROPIC_API_KEY`
-- Restart the dev server after creating/modifying `.env.local`
 
 ### Module not found errors
 - Check that path aliases are correct

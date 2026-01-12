@@ -2,76 +2,51 @@
 
 This guide explains how to deploy the MathWorks Content Discovery Assistant to GitHub Pages.
 
-## 🚨 Important Security Warning
-
-**This application makes API calls directly from the browser to the Anthropic Claude API.** When deployed to GitHub Pages (or any static hosting), your API key will be:
-
-- ✅ Embedded in the JavaScript bundle
-- ✅ Visible to anyone who inspects the network requests or JavaScript code
-- ✅ Potentially usable by others if they find it
-
-### Security Considerations
-
-**For personal/demo use:**
-- ✅ Acceptable if you're the only user
-- ✅ Set up API key usage limits in your Anthropic account
-- ✅ Monitor your API usage regularly
-- ✅ Rotate your API key periodically
-
-**For production use:**
-- ❌ **NOT recommended** to expose your API key in the client
-- ✅ Instead, set up a backend server to proxy API requests
-- ✅ Authenticate users before allowing API access
-- ✅ Implement rate limiting on your backend
+**⚠️ Proof of Concept:** This application uses mock data to demonstrate functionality. No API keys or secrets are required.
 
 ## Deployment Options
 
-### Option 1: Automated Deployment with GitHub Actions (Recommended)
+### Option 1: Via GitHub Web Interface (Easiest)
 
-This automatically deploys your app whenever you push to the main branch.
+This is the simplest method - GitHub handles everything automatically:
 
-#### Step 1: Enable GitHub Pages
+#### Step 1: Push Your Code
 
-1. Go to your repository on GitHub
-2. Click **Settings** → **Pages** (in the sidebar)
-3. Under "Source", select **GitHub Actions**
-
-#### Step 2: Add API Key as a Secret
-
-1. In your repository, go to **Settings** → **Secrets and variables** → **Actions**
-2. Click **New repository secret**
-3. Name: `ANTHROPIC_API_KEY`
-4. Value: Your actual Anthropic API key
-5. Click **Add secret**
-
-#### Step 3: Push to Main Branch
+Make sure all your changes are committed and pushed to GitHub:
 
 ```bash
-# Make sure you're on the main/master branch
-git checkout main
-
-# Or merge your changes to main
-git merge your-feature-branch
-
-# Push to trigger deployment
+git add .
+git commit -m "Ready for deployment"
 git push origin main
 ```
 
-The GitHub Action will:
-1. Build your app
-2. Inject the API key from secrets
+#### Step 2: Enable GitHub Pages
+
+1. Go to your repository on GitHub
+2. Click **Settings** (in the repository menu)
+3. Click **Pages** (in the left sidebar)
+4. Under "Build and deployment":
+   - **Source**: Select "Deploy from a branch"
+   - **Branch**: Select `main` (or your default branch)
+   - **Folder**: Select `/ (root)`
+5. Click **Save**
+
+#### Step 3: Wait for Deployment
+
+GitHub Pages will automatically:
+1. Detect the `.nojekyll` file (disables Jekyll processing)
+2. Build your Vite app
 3. Deploy to GitHub Pages
-4. Your app will be live at: `https://dmarshal-prototypes.github.io/mw-dashboard/`
 
-#### Step 4: Monitor Deployment
+This usually takes 2-5 minutes. You can monitor progress in the **Actions** tab.
 
-- Go to the **Actions** tab in your repository
-- Click on the latest workflow run to see progress
-- Once complete, visit your site!
+#### Step 4: Visit Your Site
 
-### Option 2: Manual Deployment
+Your app will be live at: `https://dmarshal-prototypes.github.io/mw-dashboard/`
 
-If you prefer to deploy manually from your local machine:
+### Option 2: Manual Deployment with npm
+
+If you prefer more control, you can deploy manually from your local machine:
 
 #### Step 1: Install Dependencies
 
@@ -79,205 +54,193 @@ If you prefer to deploy manually from your local machine:
 npm install
 ```
 
-#### Step 2: Create Production Environment File
-
-Create `.env.production` in the root directory:
-
-```env
-VITE_ANTHROPIC_API_KEY=your_api_key_here
-VITE_API_BASE_URL=https://api.anthropic.com/v1
-VITE_MODEL_NAME=claude-sonnet-4-20250514
-VITE_MAX_TOKENS=4000
-```
-
-**Note:** `.env.production` is gitignored, so it won't be committed.
-
-#### Step 3: Deploy
+#### Step 2: Build and Deploy
 
 ```bash
 npm run deploy
 ```
 
 This command:
-1. Builds the app (`npm run build`)
-2. Creates a `dist/` folder with the production build
-3. Pushes the `dist/` folder to the `gh-pages` branch
-4. Your app goes live at: `https://dmarshal-prototypes.github.io/mw-dashboard/`
+1. Builds your app (`npm run build`)
+2. Creates a `dist/` folder
+3. Pushes the contents to the `gh-pages` branch
+4. Your app goes live automatically
 
-#### Step 4: Enable GitHub Pages (if not already)
+#### Step 3: Configure GitHub Pages (First Time Only)
+
+If this is your first deployment:
 
 1. Go to **Settings** → **Pages**
 2. Under "Source", select **Deploy from a branch**
 3. Select branch: `gh-pages`, folder: `/ (root)`
 4. Click **Save**
 
-## Verification
+### Option 3: Build Locally and Push
 
-After deployment, verify your app:
-
-1. **Check the URL**: Visit `https://dmarshal-prototypes.github.io/mw-dashboard/`
-2. **Test functionality**:
-   - Enter a MathWorks documentation URL
-   - Click "Discover"
-   - Verify results appear
-3. **Check browser console**: Look for any errors
-
-## Troubleshooting
-
-### Issue: "API key not configured" Error
-
-**Cause:** The API key wasn't properly injected during build.
-
-**Solution:**
-- For GitHub Actions: Check that `ANTHROPIC_API_KEY` secret is set correctly
-- For manual deploy: Ensure `.env.production` exists with the correct key
-- Clear your browser cache and try again
-
-### Issue: 404 Error - Page Not Found
-
-**Cause:** Base path misconfiguration.
-
-**Solution:**
-- Verify `base: '/mw-dashboard/'` in `vite.config.js` matches your repo name
-- If your repo is named differently, update the base path
-
-### Issue: Assets Not Loading (CSS/JS)
-
-**Cause:** Incorrect asset paths.
-
-**Solution:**
-- Make sure the `base` in `vite.config.js` matches your GitHub Pages path
-- Rebuild and redeploy: `npm run build && npm run deploy`
-
-### Issue: CORS Errors
-
-**Cause:** Anthropic API might have CORS restrictions.
-
-**Solution:**
-- The current implementation uses direct API calls which should work
-- If CORS issues occur, you'll need to implement a backend proxy
-
-## Updating Your Deployment
-
-### For GitHub Actions Deployment
+For full control over the build process:
 
 ```bash
-# Make your changes
-git add .
-git commit -m "Your changes"
-git push origin main
-```
+# Build the app
+npm run build
 
-The deployment happens automatically.
+# The dist/ folder contains your built app
+# You can inspect it before deploying
 
-### For Manual Deployment
-
-```bash
-# Make your changes
-git add .
-git commit -m "Your changes"
-git push
-
-# Redeploy
+# Deploy to gh-pages branch
 npm run deploy
 ```
 
-## Environment Variables Reference
+## Verification
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_ANTHROPIC_API_KEY` | Your Anthropic API key (required) | - |
-| `VITE_API_BASE_URL` | Anthropic API base URL | `https://api.anthropic.com/v1` |
-| `VITE_MODEL_NAME` | Claude model to use | `claude-sonnet-4-20250514` |
-| `VITE_MAX_TOKENS` | Max tokens for responses | `4000` |
+After deployment, verify your app works:
 
-## Monitoring API Usage
+1. **Visit the URL**: `https://dmarshal-prototypes.github.io/mw-dashboard/`
+2. **Test functionality**:
+   - Enter any text in the URL field (e.g., "plot" or "https://mathworks.com/help/matlab/ref/plot.html")
+   - Click "Discover"
+   - Verify mock results appear
+3. **Check browser console**: Look for the message "Using MOCK data for proof of concept"
 
-Since your API key is exposed in the client:
+## Troubleshooting
 
-1. **Set up usage alerts** in your Anthropic account
-2. **Monitor usage** regularly at https://console.anthropic.com
-3. **Set spending limits** to prevent unexpected charges
-4. **Rotate your key** if you suspect unauthorized use
+### Issue: 404 Error - Page Not Found
 
-## Alternative: Backend Proxy (More Secure)
+**Cause:** Base path misconfiguration or GitHub Pages not enabled.
 
-For production use, consider:
+**Solution:**
+1. Verify `base: '/mw-dashboard/'` in `vite.config.js` matches your repo name
+2. Check that GitHub Pages is enabled in Settings → Pages
+3. Wait 2-5 minutes after enabling (it takes time to deploy)
 
-1. **Deploy a backend** (Node.js, Python, etc.) on:
-   - Vercel
-   - Netlify Functions
-   - AWS Lambda
-   - Your own server
+### Issue: Assets Not Loading (CSS/JS missing)
 
-2. **Move API calls** to the backend
-3. **Authenticate users** before allowing API access
-4. **Keep your API key** on the server only
+**Cause:** Incorrect base path in Vite config.
 
-Example backend structure:
+**Solution:**
+1. Open `vite.config.js`
+2. Verify the `base` setting matches your repository name:
+   ```javascript
+   base: '/mw-dashboard/', // Must match your repo name
+   ```
+3. If your repo is named differently, update this path
+4. Rebuild and redeploy: `npm run deploy`
+
+### Issue: Jekyll Processing Errors
+
+**Cause:** GitHub Pages tried to use Jekyll instead of serving the Vite build.
+
+**Solution:**
+- Verify `.nojekyll` file exists in the `public/` folder
+- This file tells GitHub Pages to skip Jekyll processing
+- It's already included in the project, but if missing, create an empty file: `touch public/.nojekyll`
+
+### Issue: Changes Not Appearing
+
+**Cause:** Browser cache or deployment delay.
+
+**Solution:**
+1. Hard refresh your browser (Ctrl+Shift+R or Cmd+Shift+R)
+2. Check the Actions tab to ensure deployment completed
+3. Clear browser cache if issue persists
+
+## Updating Your Deployment
+
+### Using GitHub Web Interface
+
+Just push your changes:
+
+```bash
+git add .
+git commit -m "Update application"
+git push origin main
 ```
-backend/
-├── api/
-│   └── analyze.js    # Proxy endpoint
-├── middleware/
-│   ├── auth.js       # Authentication
-│   └── rateLimit.js  # Rate limiting
-└── server.js         # Express/Fastify server
+
+GitHub Pages automatically rebuilds and deploys.
+
+### Using Manual Deployment
+
+```bash
+git add .
+git commit -m "Update application"
+git push
+
+npm run deploy
 ```
+
+## Custom Domain Setup (Optional)
+
+If you want to use a custom domain like `your-domain.com`:
+
+1. Add a `CNAME` file to `public/` folder:
+   ```
+   your-domain.com
+   ```
+
+2. Configure DNS with your domain provider:
+   - Add a CNAME record pointing to `dmarshal-prototypes.github.io`
+
+3. In GitHub **Settings** → **Pages**:
+   - Enter your custom domain
+   - Enable "Enforce HTTPS"
 
 ## GitHub Pages Limitations
 
 - ✅ Free hosting for public repositories
 - ✅ HTTPS by default
+- ✅ Automatic builds from source
 - ✅ Custom domain support
 - ❌ No server-side code (static files only)
-- ❌ No environment variables at runtime (must be at build time)
-- ❌ No backend/API protection
+- ❌ No environment variables at runtime (build time only)
+- ❌ No backend API support (unless you use external services)
+
+## Performance Tips
+
+The current build is optimized with:
+- Code splitting (React/ReactDOM in separate chunks)
+- Tree shaking (unused code removed)
+- Minification
+- Asset optimization
+
+For further optimization:
+- Enable gzip compression (GitHub Pages does this automatically)
+- Use lazy loading for components (add React.lazy where appropriate)
+- Optimize images (compress before adding to project)
+
+## Monitoring
+
+Since this is a static site with mock data:
+- No API usage to monitor
+- No backend costs
+- Free hosting via GitHub Pages
+
+You can view site traffic in:
+- GitHub repository → Insights → Traffic
 
 ## Next Steps
 
 After deploying:
 
-1. ✅ Test your app thoroughly
-2. ✅ Share the URL with others
-3. ✅ Monitor API usage
-4. ⚠️ Consider implementing a backend proxy for production
-5. ✅ Set up a custom domain (optional)
-
-## Custom Domain Setup (Optional)
-
-1. Add a `CNAME` file to the `public/` folder:
-   ```
-   your-domain.com
-   ```
-
-2. Configure DNS:
-   - Add a CNAME record pointing to `dmarshal-prototypes.github.io`
-
-3. In GitHub Settings → Pages:
-   - Enter your custom domain
-   - Enable "Enforce HTTPS"
-
-## Support
-
-For issues with:
-- **Deployment**: Check the Actions tab for error logs
-- **Application**: Check browser console for errors
-- **API**: Verify your API key is valid at https://console.anthropic.com
+1. ✅ Share your URL: `https://dmarshal-prototypes.github.io/mw-dashboard/`
+2. ✅ Test on different devices and browsers
+3. ✅ Gather feedback on the UI/UX
+4. ⚠️ When ready for production: Replace mock data with real API integration
+5. ⚠️ For real API: Implement a backend proxy to secure API keys
 
 ## Summary
 
-✅ **Quick Start:**
+**Quick Deploy:**
 ```bash
-# Automated (recommended)
-1. Set ANTHROPIC_API_KEY secret in GitHub
-2. Push to main branch
-3. Done!
+# Push to GitHub
+git push origin main
 
-# Manual
-1. Create .env.production with your API key
-2. npm run deploy
-3. Done!
+# Enable GitHub Pages via Settings → Pages
+# Done! Site live in 2-5 minutes
 ```
 
-🎉 Your app will be live at: `https://dmarshal-prototypes.github.io/mw-dashboard/`
+**Manual Deploy:**
+```bash
+npm run deploy
+# Done! Site updates immediately
+```
+
+🎉 Your app is now live at: `https://dmarshal-prototypes.github.io/mw-dashboard/`
