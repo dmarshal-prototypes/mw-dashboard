@@ -1,6 +1,8 @@
 # MathWorks Content Discovery Assistant
 
-A smart, AI-powered dashboard that analyzes MathWorks documentation URLs and surfaces the most relevant features, release notes, and resources tailored to your specific context.
+A smart dashboard that demonstrates how AI could analyze MathWorks documentation URLs and surface relevant features, release notes, and resources.
+
+**⚠️ Proof of Concept:** This application currently uses mock data to demonstrate the UI and functionality. API integration is disabled.
 
 ## Overview
 
@@ -47,7 +49,6 @@ See `REFACTORING_PROPOSAL.md` for detailed architecture documentation.
 
 - Node.js (v16 or higher)
 - npm or yarn
-- Anthropic API key
 
 ### Installation
 
@@ -56,19 +57,16 @@ See `REFACTORING_PROPOSAL.md` for detailed architecture documentation.
 git clone <repository-url>
 cd mw-dashboard
 
-# Install dependencies (will need package.json - see Setup section)
+# Install dependencies
 npm install
-
-# Set up environment variables
-echo "VITE_ANTHROPIC_API_KEY=your-api-key-here" > .env.local
 
 # Start development server
 npm run dev
 ```
 
-The application will start on `http://localhost:3000`.
+The application will start on `http://localhost:3000` and will display mock data to demonstrate functionality.
 
-See `QUICK_START.md` for detailed setup instructions.
+**Note:** No API key is required for this proof of concept. The app uses sample data to show how the interface would work.
 
 ## How It Works
 
@@ -77,20 +75,17 @@ See `QUICK_START.md` for detailed setup instructions.
 3. **Parsing**: Response is parsed into structured data (context, features, release notes, content)
 4. **Display**: Results are rendered in an organized, visually appealing layout with relevance scores
 
-## API Integration
+## Data Structure
 
-The application communicates directly with the Anthropic Claude API:
+**Current Implementation:** The application uses mock data to demonstrate the interface without requiring API access.
 
-- **Model**: `claude-sonnet-4-20250514`
-- **Max Tokens**: 4000
-- **Endpoint**: `https://api.anthropic.com/v1/messages`
-
-The prompt is carefully crafted to extract:
-- User context (what they're working on)
-- R2025b new features (2-4 items)
-- Top picks from earlier releases (1-2 items)
-- Related release notes (2-4 items)
-- Additional content (videos, blogs, examples)
+**Proposed API Integration:** In a production version, this would communicate with the Anthropic Claude API to:
+- Analyze the documentation URL
+- Extract user context (what they're working on)
+- Identify R2025b new features (2-4 items)
+- Recommend top picks from earlier releases (1-2 items)
+- Surface related release notes (2-4 items)
+- Suggest additional content (videos, blogs, examples)
 
 ## Response Structure
 
@@ -124,23 +119,26 @@ The prompt is carefully crafted to extract:
 
 ### GitHub Pages
 
-This app is configured for easy deployment to GitHub Pages:
+This app can be easily deployed to GitHub Pages:
 
-**Automated Deployment (Recommended):**
-1. Set `ANTHROPIC_API_KEY` secret in your GitHub repository
-2. Push to main branch
-3. GitHub Actions automatically builds and deploys
+**Via GitHub Web Interface (Recommended):**
+1. Go to repository Settings → Pages
+2. Source: Deploy from a branch
+3. Branch: Select the branch with your code (e.g., `main`)
+4. Folder: `/ (root)`
+5. Save
+
+GitHub Pages will automatically build and deploy your app.
 
 **Manual Deployment:**
 ```bash
-npm run deploy
+npm run build  # Build the app
+npm run deploy # Deploy to gh-pages branch
 ```
 
 **Live URL:** `https://dmarshal-prototypes.github.io/mw-dashboard/`
 
-⚠️ **Security Note:** When deployed to GitHub Pages, the API key is embedded in the JavaScript bundle. This is acceptable for personal/demo use, but for production, implement a backend proxy.
-
-See `DEPLOYMENT.md` for complete deployment instructions and security considerations.
+**Note:** Since this is a proof of concept using mock data, no API keys or secrets are required for deployment.
 
 ## Project Structure
 
